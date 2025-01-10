@@ -15,6 +15,18 @@ export async function addProduct(app: FastifyInstance) {
       req.body
     );
 
+    const list = await prismaClient.list.findUnique({
+      where: {
+        id: listId,
+      },
+    });
+
+    if (!list) {
+      return res.status(400).send({
+        error: "List not found",
+      });
+    }
+
     const product = await prismaClient.item.create({
       data: {
         productName,

@@ -10,6 +10,15 @@ export async function removeProduct(app: FastifyInstance) {
   app.delete("/products", async (req, res) => {
     const { productId } = productSchema.parse(req.body);
 
+    const removeProduct = await prismaClient.item.findUnique({
+      where: {
+        id: productId,
+      },
+    });
+
+    if (!removeProduct)
+      return res.status(400).send({ error: "Product not found" });
+
     const removedProduct = await prismaClient.item.delete({
       where: {
         id: productId,

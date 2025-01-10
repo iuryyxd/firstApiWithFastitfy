@@ -20,6 +20,18 @@ export async function updateProduct(app: FastifyInstance) {
       req.body
     );
 
+    const productExists = await prismaClient.item.findUnique({
+      where: {
+        id: productId,
+      },
+    });
+
+    if (!productExists) {
+      return res.status(400).send({
+        error: "Product not found",
+      });
+    }
+
     const product = await prismaClient.item.update({
       where: {
         id: productId,
